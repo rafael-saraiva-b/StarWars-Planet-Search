@@ -23,16 +23,21 @@ export default function Main() {
 
   useEffect(() => {
     if (results) {
+      results.forEach((result) => { result.notRender = false; });
       setFilteredByName(results.filter((result) => result.name.includes(search)));
     }
   }, [results, search]);
 
   useEffect(() => {
-    console.log(filtros);
+    if (filteredByName) {
+      setFilteredByName(filteredByName.map((result) => {
+        result.notRender = false;
+        return result;
+      }));
+    }
     if (filtros.length !== 0) {
       filtros.forEach((filtro) => {
         setFilteredByName(filteredByName.map((result) => {
-          result.notRender = false;
           let test = false;
           switch (filtro.comparator) {
           case 'maior que':
@@ -53,11 +58,6 @@ export default function Main() {
           return result;
         }));
       });
-    } else if (filteredByName) {
-      setFilteredByName(filteredByName.map((result) => {
-        result.notRender = false;
-        return result;
-      }));
     }
   }, [filtros]);
 
@@ -131,6 +131,14 @@ export default function Main() {
 
         </button>
       </form>
+      <button
+        data-testid="button-remove-filters"
+        type="button"
+        onClick={ () => setFiltros([]) }
+      >
+        Remover todas filtragens
+
+      </button>
       <ul>
         {filtros
         && filtros.map((filtro) => (
