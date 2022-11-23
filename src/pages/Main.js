@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useData from '../services/useData';
 
-let nextId = 0;
+let nextId = 1;
 
 export default function Main() {
   const { isLoading, data: planets = [] } = useData('https://swapi.dev/api/planets');
@@ -20,6 +20,7 @@ export default function Main() {
   const [filtros, setFiltros] = useState([]);
 
   const { results } = planets;
+
   useEffect(() => {
     if (results) {
       setFilteredByName(results.filter((result) => result.name.includes(search)));
@@ -27,9 +28,11 @@ export default function Main() {
   }, [results, search]);
 
   useEffect(() => {
-    if (filtros.length > 0) {
+    console.log(filtros);
+    if (filtros.length !== 0) {
       filtros.forEach((filtro) => {
-        setFilteredByName(filteredByName.filter((result) => {
+        setFilteredByName(filteredByName.map((result) => {
+          result.notRender = false;
           let test = false;
           switch (filtro.comparator) {
           case 'maior que':
@@ -44,29 +47,29 @@ export default function Main() {
           default:
             test = false;
           }
-          return test;
+          if (!test) {
+            result.notRender = true;
+          }
+          return result;
         }));
       });
-
-      // setFilteredByName(filteredByName.filter((result) => filtros.map((filtro) => {
-      //   let test;
-      //   switch (filtro.comparator) {
-      //   case 'maior que':
-      //     test = result[filtro.collum] > filtro.value;
-      //     break;
-      //   case 'menor que':
-      //     test = result[filtro.collum] < filtro.value;
-      //     break;
-      //   case 'igual a':
-      //     test = result[filtro.collum] === filtro.value;
-      //     break;
-      //   default:
-      //     test = false;
-      //   }
-      //   return test;
-      // })));
+    } else if (filteredByName) {
+      setFilteredByName(filteredByName.map((result) => {
+        result.notRender = false;
+        return result;
+      }));
     }
   }, [filtros]);
+
+  const handleRemoveItem = (e) => {
+    const collum = e.target.getAttribute('name');
+    if (filtros.length === 1) {
+      setFiltros([]);
+    } else {
+      setFiltros(filtros.filter((item) => item.collum !== collum));
+    }
+    setColluns([...colluns, collum]);
+  };
 
   if (isLoading) return <h1>Carregando...</h1>;
   return (
@@ -121,12 +124,42 @@ export default function Main() {
             ]);
             nextId += 1;
             setColluns((current) => current.filter((collum) => collum !== collumSearch));
+            setCollumSearch(colluns[1]);
           } }
         >
           filtrar
 
         </button>
       </form>
+      <ul>
+        {filtros
+        && filtros.map((filtro) => (
+          <li data-testid="filter" key={ filtro.id }>
+            {' '}
+            {filtro.collum}
+            {' '}
+            {filtro.comparator}
+            {' '}
+            {filtro.value}
+            <button
+              name={ filtro.collum }
+              type="button"
+              onClick={ handleRemoveItem }
+              //    () => {
+              //   if (filtros.length === 1) {
+              //     setFiltros([]);
+              //   } else {
+              //     ;
+              //   }
+              //   setColluns([...colluns, filtro.collum]);
+              // }
+
+            >
+              X
+
+            </button>
+          </li>))}
+      </ul>
       <table>
         <caption>Tabela de gastos</caption>
         <thead>
@@ -148,23 +181,28 @@ export default function Main() {
         </thead>
         <tbody>
           { filteredByName
-          && filteredByName.map((planet, index) => (
-            <tr key={ index }>
-              <td>{planet.name}</td>
-              <td>{planet.rotation_period}</td>
-              <td>{planet.orbital_period}</td>
-              <td>{planet.diameter}</td>
-              <td>{planet.climate}</td>
-              <td>{planet.gravity}</td>
-              <td>{planet.terrain}</td>
-              <td>{planet.surface_water}</td>
-              <td>{planet.population}</td>
-              <td>{planet.films}</td>
-              <td>{planet.created}</td>
-              <td>{planet.edited}</td>
-              <td>{planet.url}</td>
-            </tr>
-          ))}
+          && filteredByName.map((planet, index) => {
+            if (!planet.notRender) {
+              return (
+                <tr key={ index }>
+                  <td>{planet.name}</td>
+                  <td>{planet.rotation_period}</td>
+                  <td>{planet.orbital_period}</td>
+                  <td>{planet.diameter}</td>
+                  <td>{planet.climate}</td>
+                  <td>{planet.gravity}</td>
+                  <td>{planet.terrain}</td>
+                  <td>{planet.surface_water}</td>
+                  <td>{planet.population}</td>
+                  <td>{planet.films}</td>
+                  <td>{planet.created}</td>
+                  <td>{planet.edited}</td>
+                  <td>{planet.url}</td>
+                </tr>
+              );
+            }
+            return null;
+          })}
         </tbody>
       </table>
     </>
