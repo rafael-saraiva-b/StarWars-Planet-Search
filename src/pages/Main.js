@@ -7,6 +7,12 @@ export default function Main() {
   const { isLoading, data: planets = [] } = useData('https://swapi.dev/api/planets');
 
   const [search, setSearch] = useState('');
+  const [colluns, setColluns] = useState([
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water']);
   const [collumSearch, setCollumSearch] = useState('population');
   const [comparationSearch, setComparationSearch] = useState('maior que');
   const [valueSearch, setValueSearch] = useState(0);
@@ -80,11 +86,12 @@ export default function Main() {
           data-testid="column-filter"
           onChange={ (e) => setCollumSearch(e.target.value) }
         >
-          <option>population</option>
+          {colluns.map((collun, index) => <option key={ index }>{collun}</option>)}
+          {/* <option>population</option>
           <option>orbital_period</option>
           <option>diameter</option>
           <option>rotation_period</option>
-          <option>surface_water</option>
+          <option>surface_water</option> */}
         </select>
         <select
           data-testid="comparison-filter"
@@ -113,6 +120,7 @@ export default function Main() {
               },
             ]);
             nextId += 1;
+            setColluns((current) => current.filter((collum) => collum !== collumSearch));
           } }
         >
           filtrar
