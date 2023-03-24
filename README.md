@@ -1,10 +1,9 @@
-# :construction: README em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto.
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+# Projeto realizado durante curso de Desenvolvimento Web da Trybe
+
+Nesse projeto tivemos que utilizar de React para criart uma sistema de pesquisas utilizando da api de StarWars, alem disso, desenvolvi teste para a aplicação.
+
+Os arquivos que foram desenvolvidos por mim: 
+src/App.js
+src/pages/Main.js
+src/services/useData.js
+src/tests/App.test.js
